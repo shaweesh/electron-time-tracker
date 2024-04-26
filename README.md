@@ -48,7 +48,6 @@ Here is a brief overview of the main files:
 
 - `main.js`: The main Electron file, which sets up the window and handles time tracking and screenshot functionality.
 - `index.html`: The HTML file for the app's UI.
-- `renderer.js`: The JavaScript file for the app's UI, which communicates with the main process via IPC.
 
 ## IPC Channels
 
