@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Tracker</title>
+    <link rel="stylesheet" href="dist/output.css">
+</head>
+
+<body class="bg-gray-100 font-sans h-screen flex flex-col">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md relative">
+        <button id="close-button" class="absolute top-2 right-2 text-gray-600 hover:text-red-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <h1 class="text-2xl font-bold mb-4 text-center">Time Tracker</h1>
+        <div class="flex justify-between items-center mb-4">
+            <p class="text-gray-600">Total time tracked: <span id="total-time" class="font-bold">0 seconds</span></p>
+            <button id="start-button"
+                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Start Tracking</button>
+        </div>
+        <button id="stop-button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded w-full">Stop
+            Tracking</button>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        let totalTime = 0;
+        const totalTimeElement = document.getElementById('total-time');
+
+        document.getElementById('start-button').addEventListener('click', () => {
+            ipcRenderer.send('start-time-tracking');
+        });
+
+        document.getElementById('stop-button').addEventListener('click', () => {
+            ipcRenderer.send('stop-time-tracking');
+        });
+
+        document.getElementById('close-button').addEventListener('click', () => {
+            ipcRenderer.send('close-app');
+        });
+
+        ipcRenderer.on('time-update', (event, elapsedTime) => {
+            let hours = Math.floor(elapsedTime / 3600000);
+            let minutes = Math.floor((elapsedTime % 3600000) / 60000);
+            let seconds = Math.floor((elapsedTime % 60000) / 1000);
+            totalTimeElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        });
+    </script>
+</body>
+
+</html>
